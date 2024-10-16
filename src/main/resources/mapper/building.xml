@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.skkuwhere.app.mapper.BuildingMapper">
+    <select id="searchByCode" parameterType="int" resultType="com.skkuwhere.app.vo.BuildingVO">
+        SELECT
+            B.code, B.name
+        FROM skkuwhere.Building B
+        WHERE B.code = #{code};
+    </select>
+    
+    <update id="countUp" >
+        UPDATE skkuwhere.SC_ROOM sc
+        SET sc.people = sc.people + 1;
+    </update>
+
+    <update id="countDown" >
+        UPDATE skkuwhere.SC_ROOM sc
+        SET sc.people = sc.people - 1;
+    </update>
+
+    <select id="selectPeopleCnt" resultType="com.skkuwhere.app.vo.ScRoomVO">
+        SELECT
+            sc.people
+        FROM skkuwhere.SC_ROOM sc;
+    </select>
+
+    <update id="updatePeopleCntToZero">
+        UPDATE skkuwhere.SC_ROOM sc
+        SET
+            sc.people = 0;
+    </update>
+
+    <select id="getPeopleCntByCode" parameterType="int" resultType="com.skkuwhere.app.vo.CongestionVO">
+        SELECT
+            r.r_people
+        FROM
+            skkuwhere.ROOMS r
+        WHERE
+            r.r_building_code = #{code};
+    </select>
+</mapper>
