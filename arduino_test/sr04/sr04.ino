@@ -1,5 +1,5 @@
-int trigPin = 3;
-int echoPin = 2;
+int trigPin = 5;
+int echoPin = 4;
 
 void setup()
 {
