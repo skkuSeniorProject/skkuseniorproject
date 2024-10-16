@@ -1,7 +1,7 @@
 
 #include <SoftwareSerial.h>
 
-SoftwareSerial HM10 (8, 7);
+SoftwareSerial HM10 (9, 8);
 
 void setup() 
 {
