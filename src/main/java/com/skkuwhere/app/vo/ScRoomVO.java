@@ -8,5 +8,5 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ScRoomVO {
-    private int people;
+    private int r_people;
 }

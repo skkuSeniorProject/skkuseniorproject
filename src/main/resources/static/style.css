@@ -91,3 +91,31 @@ footer {
     color: #35644f; /* 글자 색상 변경 */
     border-bottom: 3px solid #35644f; /* 호버 시 테두리 색상 변화 */
 }
+.building-section {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+.building-box {
+    width: 100px;
+    height: 100px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    text-align: center;
+}
+
+.building-box:hover {
+    background-color: #e0e0e0;
+}
+
+.result-section {
+    margin: 20px;
+    text-align: center;
+    font-size: 1.2em;
+    color: #333;
+}

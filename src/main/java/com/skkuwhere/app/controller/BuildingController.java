@@ -31,13 +31,9 @@ public class BuildingController {
         return buildingService.countDown();
     }
 
-    @GetMapping("/sc-room/congestion")
-    public ResponseEntity<Object> getCongestion(){
-        return buildingService.getCongestion();
+    @GetMapping("/congestion")
+    public ResponseEntity<Object> getCongestion(@RequestParam("code") int code){
+        return buildingService.getCongestion(code);
     }
 
-//    @GetMapping("/congestion")
-//    public ResponseEntity<Object> getCongestionByBuildingCode(@RequestParam("code") int code){
-//        return buildingService.getCongetsionByBuildingCode(code);
-//    }
 }

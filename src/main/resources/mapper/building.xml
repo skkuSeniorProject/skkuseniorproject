@@ -11,19 +11,22 @@
     </select>
     
     <update id="countUp" >
-        UPDATE skkuwhere.SC_ROOM sc
-        SET sc.people = sc.people + 1;
+        UPDATE skkuwhere.ROOMS r
+        SET r.r_people = r.r_people + 1
+        WHERE r.r_building_code = 26318;
     </update>
 
     <update id="countDown" >
-        UPDATE skkuwhere.SC_ROOM sc
-        SET sc.people = sc.people - 1;
+        UPDATE skkuwhere.ROOMS r
+        SET r.r_people = r.r_people - 1
+        WHERE r.r_building_code = 26318;
     </update>
 
-    <select id="selectPeopleCnt" resultType="com.skkuwhere.app.vo.ScRoomVO">
+    <select id="getScRoomCnt" resultType="com.skkuwhere.app.vo.ScRoomVO">
         SELECT
-            sc.people
-        FROM skkuwhere.SC_ROOM sc;
+            r.r_people
+        FROM skkuwhere.ROOMS r
+        WHERE r.r_building_code = 26318;
     </select>
 
     <update id="updatePeopleCntToZero">
@@ -34,10 +37,16 @@
 
     <select id="getPeopleCntByCode" parameterType="int" resultType="com.skkuwhere.app.vo.CongestionVO">
         SELECT
-            r.r_people
+            r.r_people,r.r_seat
         FROM
             skkuwhere.ROOMS r
         WHERE
             r.r_building_code = #{code};
     </select>
+    
+    <update id="updatePeopleByRoomType" parameterType="map">
+        UPDATE skkuwhere.ROOMS r
+        SET r.r_people = #{people}
+        WHERE r.r_room_type = #{roomType};
+    </update>
 </mapper>
