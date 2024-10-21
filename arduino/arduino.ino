@@ -31,30 +31,22 @@ void loop() {
   //대기
   delay(50); 
   //첫번째 거리 읽기
-  //Serial.print("Ch1: ");
-  //Serial.print(sonar_ch1.ping_cm()); // Send ping, get distance in cm and print result (0 = outside set distance range)
-  //Serial.println("cm");
-
   if(sonar_ch1.ping_cm() < default_distance) {
     if(flag_rear == 1) {
       flag_rear = 0;
       Serial.println("IN!!!!");
-      HM10.write("IN!!!!");
+      HM10.write("building/sc-room/up");
     }
     else
       flag_front = 1;
   }
 
   //두번째 거리 읽기
-  //Serial.print("Ch2: ");
-  //Serial.print(sonar_ch2.ping_cm()); // Send ping, get distance in cm and print result (0 = outside set distance range)
-  //Serial.println("cm");
-
   if(sonar_ch2.ping_cm() < default_distance) {
     if(flag_front == 1) {
       flag_front = 0;
       Serial.println("OUT!!!!");
-      HM10.write("OUT!!!!");
+      HM10.write("building/sc-room/down");
     }
     else
       flag_rear = 1;
