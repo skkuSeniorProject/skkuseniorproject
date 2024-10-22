@@ -35,18 +35,20 @@ void loop() {
     if(flag_rear == 1) {
       flag_rear = 0;
       Serial.println("IN!!!!");
-      HM10.write("building/sc-room/up");
+      HM10.write("up");
     }
     else
       flag_front = 1;
   }
+
+  delay(50);
 
   //두번째 거리 읽기
   if(sonar_ch2.ping_cm() < default_distance) {
     if(flag_front == 1) {
       flag_front = 0;
       Serial.println("OUT!!!!");
-      HM10.write("building/sc-room/down");
+      HM10.write("down");
     }
     else
       flag_rear = 1;
