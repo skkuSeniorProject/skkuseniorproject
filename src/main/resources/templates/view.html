@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aggregation</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h1>SKKUWhere - Building Logs</h1>
+<button id="loadDataBtn">Load Building Data</button>
+
+<div id="chartsContainer"></div>
+
+<script>
+    document.getElementById('loadDataBtn').addEventListener('click', function() {
+        // 데이터 로드
+        fetch('/building/aggregation/view')
+            .then(response => response.json())
+            .then(data => {
+                const chartsContainer = document.getElementById('chartsContainer');
+                chartsContainer.innerHTML = ''; // 기존의 그래프를 지웁니다.
+
+                // 각 빌딩의 데이터를 순회하며 그래프를 생성합니다.
+                Object.keys(data).forEach(buildingCode => {
+                    const buildingLogs = data[buildingCode];
+
+                    // 그래프에 사용할 라벨(시간)과 데이터(사람 수)를 추출합니다.
+                    const labels = buildingLogs.map(log => log.rl_log_time);
+                    const peopleData = buildingLogs.map(log => log.rl_people);
+
+                    // 캔버스를 생성하여 chartsContainer에 추가합니다.
+                    const canvas = document.createElement('canvas');
+                    chartsContainer.appendChild(canvas);
+
+                    // Chart.js를 사용해 그래프를 생성합니다.
+                    const ctx = canvas.getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels.reverse(), // 최신순으로 정렬된 데이터를 시간 순으로 표시하기 위해 반전합니다.
+                            datasets: [{
+                                label: `Building ${buildingCode} - 최근 8개의 로그`,
+                                data: peopleData.reverse(),
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: '로그 시간'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: '사람 수'
+                                    },
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+</script>
+</body>
+</html>

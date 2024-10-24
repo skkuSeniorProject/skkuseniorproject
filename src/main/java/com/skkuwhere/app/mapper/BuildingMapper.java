@@ -1,10 +1,10 @@
 package com.skkuwhere.app.mapper;
 
-import com.skkuwhere.app.vo.BuildingVO;
-import com.skkuwhere.app.vo.ScRoomVO;
-import com.skkuwhere.app.vo.CongestionVO;
+import com.skkuwhere.app.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface BuildingMapper {
@@ -18,6 +18,14 @@ public interface BuildingMapper {
     int updatePeopleCntToZero();
 
     CongestionVO getPeopleCntByCode(int code);
-    int updatePeopleByRoomType(@Param("roomType") String roomType, @Param("people") int people);
+
     ScRoomVO getScRoomCnt();
+
+    List<RoomVO> getBuildingCodeAndSeat();
+
+    int updatePeopleByRandom(RoomVO accessvo);
+
+    int updateLog(RoomVO accessvo);
+
+    List<RoomLogVO> findRecentLogsForAllBuildings();
 }

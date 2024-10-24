@@ -49,4 +49,31 @@
         SET r.r_people = #{people}
         WHERE r.r_room_type = #{roomType};
     </update>
+    <select id="getBuildingCodeAndSeat" resultType="com.skkuwhere.app.vo.RoomVO" >
+        SELECT
+            r.r_building_code,r.r_seat
+        FROM
+            skkuwhere.ROOMS r ;
+
+    </select>
+    <update id="updatePeopleByRandom" parameterType="com.skkuwhere.app.vo.RoomVO">
+        UPDATE skkuwhere.ROOMS
+        SET r_people = #{r_people}
+        WHERE r_building_code = #{r_building_code};
+    </update>
+    <insert id="updateLog" parameterType="com.skkuwhere.app.vo.RoomVO">
+        INSERT INTO skkuwhere.ROOMS_LOG
+        (rl_building_code,rl_people)
+        VALUES
+        (
+         #{r_building_code},#{r_people}
+        );
+    </insert>
+
+    <select id="findRecentLogsForAllBuildings" resultType="com.skkuwhere.app.vo.RoomLogVO">
+        SELECT rl_building_code, rl_people, rl_log_time
+        FROM skkuwhere.ROOMS_LOG
+        ORDER BY rl_log_time DESC
+            LIMIT 112
+    </select>
 </mapper>

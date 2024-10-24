@@ -3,11 +3,10 @@ package com.skkuwhere.app.service;
 import com.skkuwhere.app.dto.BuildingDTO;
 import com.skkuwhere.app.dto.CongestionDTO;
 import com.skkuwhere.app.mapper.BuildingMapper;
-import com.skkuwhere.app.vo.BuildingVO;
-import com.skkuwhere.app.vo.CongestionVO;
-import com.skkuwhere.app.vo.ScRoomVO;
+import com.skkuwhere.app.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,10 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.validation.ObjectError;
 
 import javax.naming.event.ObjectChangeListener;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -50,7 +52,7 @@ public class BuildingService {
     public ResponseEntity<Object> countUp() {
         ScRoomVO scRoomVO = buildingMapper.getScRoomCnt();
 
-        if (scRoomVO.getR_people() > 15)
+        if (scRoomVO.getR_people() >= 15)
             return new ResponseEntity<>("정원을 초과했습니다.", HttpStatus.BAD_REQUEST);
 
         int updateCnt =buildingMapper.countUp();
@@ -109,21 +111,31 @@ public class BuildingService {
     @Scheduled(cron = "1 0 */3 * * *")
     public ResponseEntity<Object> generateRandomPeople(){
         Random random = new Random();
+        List<RoomVO> roomsVo= buildingMapper.getBuildingCodeAndSeat();
 
-        int roomA = random.nextInt(21);
-        int roomB = random.nextInt(16);
-        int roomC = random.nextInt(31);
+        for (RoomVO vo :roomsVo){
+            int randomPeople = random.nextInt(vo.getR_seat())+1;
+            RoomVO accessvo = RoomVO.builder().r_building_code(vo.getR_building_code()).
+                    r_people(randomPeople).r_seat(vo.getR_seat()).build();
 
-        int updateACnt = buildingMapper.updatePeopleByRoomType("A",roomA);
-        int updateBCnt = buildingMapper.updatePeopleByRoomType("B",roomB);
-        int updateCCnt = buildingMapper.updatePeopleByRoomType("C",roomC);
-
-        if (updateCCnt == 0 || updateBCnt == 0 || updateACnt == 0) {
-            log.info("!!!!!!!Fail To Generates Random People!!!!!!!");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            int updateCnt = buildingMapper.updatePeopleByRandom(accessvo);
+            if (updateCnt == 0 ) {
+                log.info("!!!!!!!Fail To Generates Random People!!!!!!!");
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            // 로그 남기기
+            int logCnt = buildingMapper.updateLog(accessvo);
         }
+
         log.info("!!!!!!!SUCCESS To Generates Random People!!!!!!!!");
         return ResponseEntity.ok().body("Random Success.");
+    }
+    // 통계 내기
+    public Map<Integer, List<RoomLogVO>> getAggregation(){
+        List<RoomLogVO> logs = buildingMapper.findRecentLogsForAllBuildings();
+        return logs.stream()
+                .collect(Collectors.groupingBy(RoomLogVO::getRl_building_code));
+
     }
 
 }
