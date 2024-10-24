@@ -16,7 +16,7 @@ NewPing sonar_ch2(TRIGGER_CH2_PIN, ECHO_CH2_PIN, MAX_DISTANCE);
 
 SoftwareSerial HM10 (9, 8);
 
-float default_distance = 16;
+float default_distance = 86;
 bool flag_front = 0, flag_rear = 0;
 
 void setup() {
@@ -29,7 +29,7 @@ void setup() {
 void loop() {
   //최소한 29ms이상은 대기를 해야한다고 함.
   //대기
-  delay(50); 
+  delay(120); 
   //첫번째 거리 읽기
   if(sonar_ch1.ping_cm() < default_distance) {
     if(flag_rear == 1) {
@@ -41,7 +41,7 @@ void loop() {
       flag_front = 1;
   }
 
-  delay(50);
+  delay(120);
 
   //두번째 거리 읽기
   if(sonar_ch2.ping_cm() < default_distance) {
